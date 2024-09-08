@@ -38,25 +38,25 @@
   &__sidebar {
     position: fixed;
     width: 20rem;
-    height: calc(100vh - 8rem);
+    height: calc(100vh - 4rem);
     z-index: 999;
     overflow-y: auto;
     user-select: none;
-    top: 6rem;
-    left: 2rem;
+    top: 4rem;
+    left: 0;
     transition:
       transform var(--layout-section-transition-duration),
       left var(--layout-section-transition-duration);
     background-color: var(--surface-overlay);
-    border-radius: var(--content-border-radius);
     padding: 0.5rem 1.5rem;
+    border-top: 1px solid var(--surface-ground);
   }
 
   &__container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    margin-left: 22rem;
+    margin-left: 20rem;
     justify-content: space-between;
     padding: 6rem 2rem 0 2rem;
     transition: margin-left var(--layout-section-transition-duration);

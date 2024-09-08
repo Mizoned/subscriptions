@@ -22,6 +22,4 @@ const layout = computed(() => route.meta.layout || AppLayout);
   </component>
 </template>
 
-<style lang="scss">
-@import './index.scss';
-</style>
+<style src="./styles/index.scss" lang="scss"></style>

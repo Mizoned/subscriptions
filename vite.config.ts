@@ -17,6 +17,15 @@ export default defineConfig({
       { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) }
     ]
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @import "./src/app/index.scss";
+        `
+      }
+    }
+  },
   server: {
     port: 3001
   }

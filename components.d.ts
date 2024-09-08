@@ -13,4 +13,7 @@ declare module 'vue' {
     Toast: typeof import('primevue/toast')['default']
     WrapperCard: typeof import('./src/components/cards/WrapperCard.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    StyleClass: typeof import('primevue/styleclass')['default']
+  }
 }
