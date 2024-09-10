@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { AppLogo } from '@/shared/ui/logo'
+import { AppLogo } from '@/shared/ui/logo';
+import { useMenuStore } from '../model'
+const menuStore = useMenuStore();
 </script>
 
 <template>
   <div class="app-header">
     <div class="app-header-logo-container">
-      <button class="app-header-action">
+      <button class="app-header-menu-toggle app-header-action" @click="menuStore.onMenuToggle()">
         <i class="pi pi-bars"></i>
       </button>
       <router-link to="/" class="app-header-logo">
@@ -15,7 +17,20 @@ import { AppLogo } from '@/shared/ui/logo'
     </div>
 
     <div class="app-header-actions">
-      <div class="app-header-menu hidden lg:block">
+      <button
+        class="app-header-menu-button app-header-action"
+        v-styleclass="{
+          selector: '.app-header-menu',
+          enterFromClass: 'app-header-menu-hidden',
+          enterActiveClass: 'app-header-menu-fadein',
+          leaveActiveClass: 'app-header-menu-fadeout',
+          leaveToClass: 'app-header-menu-hidden',
+          hideOnOutsideClick: true
+        }"
+      >
+        <i class="pi pi-ellipsis-v"></i>
+      </button>
+      <div class="app-header-menu app-header-menu-hidden lg:block">
         <div class="app-header-menu-content">
           <button type="button" class="app-header-action">
             <i class="pi pi-user"></i>
@@ -70,12 +85,11 @@ import { AppLogo } from '@/shared/ui/logo'
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
     border: none;
     background-color: transparent;
+    width: 2.5rem;
+    height: 2.5rem;
     color: var(--text-color);
-    margin-right: 0.5rem;
     transition: background-color var(--element-transition-duration);
     cursor: pointer;
 
@@ -84,7 +98,7 @@ import { AppLogo } from '@/shared/ui/logo'
     }
 
     &:focus-visible {
-      @include focused()
+      @include focused();
     }
 
     i {
@@ -97,8 +111,7 @@ import { AppLogo } from '@/shared/ui/logo'
     }
   }
 
-  .app-header-menu-button {
-    display: none;
+  .app-header-menu-toggle {
     margin-right: 0.5rem;
   }
 
@@ -112,6 +125,14 @@ import { AppLogo } from '@/shared/ui/logo'
     display: flex;
     gap: 1rem;
   }
+
+  .app-header-menu-button {
+    display: none;
+
+    @media (max-width: 991px) {
+      display: inline-flex;
+    }
+  }
 }
 
 @media (max-width: 991px) {
@@ -122,7 +143,7 @@ import { AppLogo } from '@/shared/ui/logo'
       width: auto;
     }
 
-    .app-header-menu-button {
+    .app-header-menu-toggle {
       display: inline-flex;
       margin-left: 0;
       margin-right: 0.5rem;
@@ -171,5 +192,35 @@ import { AppLogo } from '@/shared/ui/logo'
       flex-direction: column;
     }
   }
+}
+
+@keyframes my-fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes my-fadeout {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.app-header-menu-hidden {
+  display: none;
+}
+
+.app-header-menu-fadein {
+  animation: my-fadein 150ms linear;
+}
+
+.app-header-menu-fadeout {
+  animation: my-fadeout 150ms linear;
 }
 </style>

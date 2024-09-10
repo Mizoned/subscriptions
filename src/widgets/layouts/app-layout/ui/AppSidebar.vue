@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <ul class="app-menu">
+  <ul class="app-sidebar">
     <li>Menu-item</li>
   </ul>
 </template>

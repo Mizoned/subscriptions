@@ -21,3 +21,9 @@
   --code-background: var(--p-surface-900);
   --code-color: var(--p-surface-200);
 }
+
+$mq-breakpoints: (
+    mobile: 375px,
+    tablet: 768px,
+    desktop: 992px
+);

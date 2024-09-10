@@ -1,3 +1,8 @@
+@use 'sass:math';
+
+@import "variables";
+@import "functions";
+
 @mixin focused() {
     outline: var(--focus-ring-color) var(--focus-ring-style) var(--focus-ring-width);
     outline-offset: var(--focus-ring-offset);
@@ -10,4 +15,20 @@
 @mixin focused-inset() {
     outline-offset: -1px;
     box-shadow: inset var(--focus-ring-shadow);
+}
+
+@mixin use-media($media, $maxMedia: 0) {
+    @if (map-has-key($mq-breakpoints, $media) == false and map-has-key($mq-breakpoints, $maxMedia) == true) {
+        @media only screen and (max-width: #{strip-units(map-get($mq-breakpoints, $maxMedia)) - 1}px) {
+            @content;
+        }
+    } @else if (map-has-key($mq-breakpoints, $media) == true and map-has-key($mq-breakpoints, $maxMedia) == true) {
+        @media only screen and (min-width: map-get($mq-breakpoints, $media)) and (max-width: #{strip-units(map-get($mq-breakpoints, $maxMedia)) - 1}px) {
+            @content;
+        }
+    } @else {
+        @media only screen and (min-width: map-get($mq-breakpoints, $media)) {
+            @content;
+        }
+    }
 }
