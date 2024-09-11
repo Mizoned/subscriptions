@@ -2,6 +2,13 @@ import { definePreset } from '@primevue/themes'
 import Aura from '@primevue/themes/aura'
 
 const preset = definePreset(Aura, {
+  components: {
+    button: {
+      border: {
+        radius: 0
+      }
+    }
+  },
   semantic: {
     primary: {
       50: '{blue.50}',
