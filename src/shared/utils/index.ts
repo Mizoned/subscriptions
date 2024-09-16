@@ -23,3 +23,7 @@ export const calculateDayDifferenceBetweenDates = (_dateStart: string, _dateEnd:
     return null;
   }
 }
+
+export const formatCurrency = (value: number) => {
+  return value.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' });
+};

@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { plural } from '@/shared/utils';
+import { formatCurrency, plural } from '@/shared/utils'
 import { useSubscriptionStore } from '@/entities/subscription/model';
-import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/subscription/delete'
-import CreateSubscriptionButton from '@/features/subscription/create/ui/CreateSubscriptionButton.vue'
-import CreateSubscriptionDialog from '@/features/subscription/create/ui/CreateSubscriptionDialog.vue'
+import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/subscription/delete';
+import { CreateSubscriptionButton, CreateSubscriptionDialog } from '@/features/subscription/create';
+import ViewSubscriptionButton from '@/features/subscription/view/ui/ViewSubscriptionButton.vue'
+import ViewSubscriptionDialog from '@/features/subscription/view/ui/ViewSubscriptionDialog.vue'
 
 const subscriptionStore = useSubscriptionStore();
-
-const formatCurrency = (value: number) => {
-  return value.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' });
-};
 </script>
 
 <template>
@@ -136,7 +133,7 @@ const formatCurrency = (value: number) => {
               <div class="flex align-items-center justify-content-end gap-2">
                 <Button icon="pi pi-pencil" />
                 <DeleteSubscriptionButton :id="slotProps.data.id" />
-                <Button icon="pi pi-eye" severity="danger" />
+                <ViewSubscriptionButton :id="slotProps.data.id" />
               </div>
             </template>
           </Column>
@@ -146,6 +143,7 @@ const formatCurrency = (value: number) => {
   </div>
   <CreateSubscriptionDialog />
   <DeleteSubscriptionDialog />
+  <ViewSubscriptionDialog />
 </template>
 
 <style scoped lang="scss">

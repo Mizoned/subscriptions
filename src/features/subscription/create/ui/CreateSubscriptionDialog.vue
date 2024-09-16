@@ -33,7 +33,7 @@ const saveDialog = () => {
   <Dialog
     v-model:visible="subscriptionStore.isOpenCreateDialog"
     :style="{ width: '450px' }"
-    header="Создать клиента"
+    header="Создать подписку"
     :modal="true"
     class="p-fluid"
   >
