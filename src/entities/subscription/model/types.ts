@@ -10,3 +10,10 @@ export interface ISubscriptionModel {
 export interface ISubscription extends ISubscriptionModel {
   diffDays: number | null;
 }
+
+export interface ICreateSubscription {
+  name: string;
+  price: number | null;
+  dateStart: Date | null;
+  dateEnd: Date | null;
+}

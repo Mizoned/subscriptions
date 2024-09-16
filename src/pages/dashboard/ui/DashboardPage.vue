@@ -2,6 +2,8 @@
 import { plural } from '@/shared/utils';
 import { useSubscriptionStore } from '@/entities/subscription/model';
 import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/subscription/delete'
+import CreateSubscriptionButton from '@/features/subscription/create/ui/CreateSubscriptionButton.vue'
+import CreateSubscriptionDialog from '@/features/subscription/create/ui/CreateSubscriptionDialog.vue'
 
 const subscriptionStore = useSubscriptionStore();
 
@@ -88,7 +90,7 @@ const formatCurrency = (value: number) => {
       <div class="card">
         <div class="flex gap-2 justify-content-between">
           <h5>Мои подписки</h5>
-          <Button icon="pi pi-plus" label="Создать" />
+          <CreateSubscriptionButton />
         </div>
         <Divider />
         <DataTable :value="subscriptionStore.subscriptions" :rows="5" :paginator="true" responsiveLayout="scroll">
@@ -142,6 +144,7 @@ const formatCurrency = (value: number) => {
       </div>
     </div>
   </div>
+  <CreateSubscriptionDialog />
   <DeleteSubscriptionDialog />
 </template>
 

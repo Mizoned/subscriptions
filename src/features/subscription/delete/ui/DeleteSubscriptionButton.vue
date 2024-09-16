@@ -17,5 +17,3 @@ defineProps<IProps>();
     @click="subscriptionStore.openDeleteDialog(id)"
   />
 </template>
-
-<style scoped lang="scss"></style>

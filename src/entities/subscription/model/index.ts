@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue'
 import { deleteSubscription } from '@/entities/subscription/api'
-import type { ISubscription, ISubscriptionModel } from '@/entities/subscription/model/types'
+import type { ICreateSubscription, ISubscription, ISubscriptionModel } from '@/entities/subscription/model/types'
 import { calculateDayDifferenceBetweenDates } from '@/shared/utils'
 
 export const useSubscriptionStore = defineStore('subscriptionStore', () => {
@@ -47,14 +47,42 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       deleted: false
     }
   ]);
+  const isOpenDeleteDialog = ref<boolean>(false);
+  const subscriptionToBeDeleted = ref<number | null>(null);
+
+  const isOpenCreateDialog = ref<boolean>(false);
+
   const subscriptions = computed<ISubscription[]>(() =>
     subscriptionModels.value.map((s) => ({
       ...s,
       diffDays: calculateDayDifferenceBetweenDates(s.dateStart, s.dateEnd),
     }))
   );
-  const isOpenDeleteDialog = ref<boolean>(false);
-  const subscriptionToBeDeleted = ref<number | null>(null);
+
+  const openCreateDialog = () => {
+    isOpenCreateDialog.value = true;
+  }
+
+  const closeCreateDialog = () => {
+    isOpenCreateDialog.value = false;
+  }
+
+  const createSubscriptionHandler = (subscription: ICreateSubscription) => {
+    const min = Math.ceil(1005);
+    const max = Math.floor(2000);
+    const id = Math.floor(Math.random() * (max - min) + min);
+
+    const newSubscription: ISubscriptionModel = {
+      id,
+      name: subscription.name,
+      price: subscription.price ?? 0,
+      dateStart: subscription.dateStart!.toDateString(),
+      dateEnd: subscription.dateEnd!.toDateString(),
+      deleted: false
+    }
+
+    subscriptionModels.value.push(newSubscription);
+  }
 
   const openDeleteDialog = (id: number) => {
     subscriptionToBeDeleted.value = id;
@@ -83,7 +111,11 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     openDeleteDialog,
     closeDeleteDialog,
     deleteSubscriptionHandler,
+    openCreateDialog,
+    closeCreateDialog,
+    createSubscriptionHandler,
     subscriptions,
-    isOpenDeleteDialog
+    isOpenDeleteDialog,
+    isOpenCreateDialog
   }
 });
