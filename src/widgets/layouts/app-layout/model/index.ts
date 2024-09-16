@@ -8,8 +8,8 @@ export const useMenuStore = defineStore('MenuStore', () => {
   const containerClass = computed(() => {
     return {
       'app-layout--inactive': isMenuDesktopInactive.value,
-      'app-layout--mobile-active': isMenuMobileActive.value,
-    }
+      'app-layout--mobile-active': isMenuMobileActive.value
+    };
   });
 
   const onMenuToggle = () => {
@@ -18,7 +18,7 @@ export const useMenuStore = defineStore('MenuStore', () => {
     } else {
       isMenuMobileActive.value = !isMenuMobileActive.value;
     }
-  }
+  };
 
   const resetMenu = () => {
     isMenuMobileActive.value = false;
@@ -29,5 +29,5 @@ export const useMenuStore = defineStore('MenuStore', () => {
     resetMenu,
     isMenuMobileActive,
     containerClass
-  }
+  };
 });

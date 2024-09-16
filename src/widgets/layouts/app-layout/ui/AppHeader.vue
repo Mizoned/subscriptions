@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AppLogo } from '@/shared/ui/logo';
-import { useMenuStore } from '../model'
+import { useMenuStore } from '../model';
 const menuStore = useMenuStore();
 </script>
 

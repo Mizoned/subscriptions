@@ -1,5 +1,5 @@
-import { definePreset } from '@primevue/themes'
-import Aura from '@primevue/themes/aura'
+import { definePreset } from '@primevue/themes';
+import Aura from '@primevue/themes/aura';
 
 const preset = definePreset(Aura, {
   components: {
@@ -46,4 +46,4 @@ export const options = {
   theme: { preset },
   ripple: true,
   inputStyle: 'outlined'
-}
+};

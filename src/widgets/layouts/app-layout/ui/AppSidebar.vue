@@ -1,9 +1,168 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AppMenuItem from '@/widgets/layouts/app-layout/ui/AppMenuItem.vue';
+import type { ISidebarItem } from '@/widgets/layouts/app-layout/interfaces';
+import { ref } from 'vue';
+
+const sidebarItems = ref<ISidebarItem[]>([
+  {
+    label: 'Главная',
+    items: [{ label: 'Общая', icon: 'pi pi-home', to: '/' }]
+  },
+  {
+    label: 'Профиль',
+    items: [{ label: 'Настройки', icon: 'pi pi-cog', to: '/settings' }]
+  }
+]);
+</script>
 
 <template>
   <ul class="app-sidebar">
-    <li>Menu-item</li>
+    <template v-for="(item, i) in sidebarItems" :key="item">
+      <AppMenuItem :item="item" :index="i"></AppMenuItem>
+    </template>
   </ul>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.app-sidebar {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+
+  .layout-root-menuitem {
+    > .layout-menuitem-root-text {
+      font-size: 0.857rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-color);
+      margin: 0.75rem 0;
+    }
+
+    > a {
+      display: none;
+    }
+  }
+
+  a {
+    user-select: none;
+
+    &.active-menuitem {
+      > .layout-submenu-toggler {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  li.active-menuitem {
+    > a {
+      .layout-submenu-toggler {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    a {
+      display: flex;
+      align-items: center;
+      position: relative;
+      outline: 0 none;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 0.75rem 1rem;
+      border-radius: var(--content-border-radius);
+      transition:
+        background-color var(--element-transition-duration),
+        box-shadow var(--element-transition-duration);
+
+      .layout-menuitem-icon {
+        margin-right: 0.5rem;
+      }
+
+      .layout-submenu-toggler {
+        font-size: 75%;
+        margin-left: auto;
+        transition: transform var(--element-transition-duration);
+      }
+
+      &.active-route {
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      &:hover {
+        background-color: var(--surface-hover);
+      }
+
+      &:focus {
+        @include focused-inset();
+      }
+    }
+
+    ul {
+      overflow: hidden;
+      border-radius: var(--content-border-radius);
+
+      li {
+        a {
+          margin-left: 1rem;
+        }
+
+        li {
+          a {
+            margin-left: 2rem;
+          }
+
+          li {
+            a {
+              margin-left: 2.5rem;
+            }
+
+            li {
+              a {
+                margin-left: 3rem;
+              }
+
+              li {
+                a {
+                  margin-left: 3.5rem;
+                }
+
+                li {
+                  a {
+                    margin-left: 4rem;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.layout-submenu-enter-from,
+.layout-submenu-leave-to {
+  max-height: 0;
+}
+
+.layout-submenu-enter-to,
+.layout-submenu-leave-from {
+  max-height: 1000px;
+}
+
+.layout-submenu-leave-active {
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0, 1, 0, 1);
+}
+
+.layout-submenu-enter-active {
+  overflow: hidden;
+  transition: max-height 1s ease-in-out;
+}
+</style>

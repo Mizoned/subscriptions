@@ -9,8 +9,13 @@ export const routes: RouteRecordRaw[] = [
       {
         path: '/',
         name: 'dashboard',
-        component: () => import('@/pages/dashboard'),
+        component: () => import('@/pages/dashboard')
+      },
+      {
+        path: '/settings',
+        name: 'settings',
+        component: () => import('@/pages/settings')
       }
     ]
   }
-]
+];

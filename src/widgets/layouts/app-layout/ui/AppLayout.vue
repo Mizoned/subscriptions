@@ -16,29 +16,37 @@ const bindOutsideClickListener = () => {
     };
     document.addEventListener('click', outsideClickListener.value);
   }
-}
+};
 
 const unbindOutsideClickListener = () => {
   if (outsideClickListener.value) {
     document.removeEventListener('click', outsideClickListener.value);
     outsideClickListener.value = null;
   }
-}
+};
 
 const isOutsideClicked = (event: any) => {
   const sidebarEl = document.querySelector('.app-layout__sidebar');
   const topbarEl = document.querySelector('.app-header-menu-toggle');
 
-  return !(sidebarEl?.isSameNode(event.target) || sidebarEl?.contains(event.target) || topbarEl?.isSameNode(event.target) || topbarEl?.contains(event.target));
-}
+  return !(
+    sidebarEl?.isSameNode(event.target) ||
+    sidebarEl?.contains(event.target) ||
+    topbarEl?.isSameNode(event.target) ||
+    topbarEl?.contains(event.target)
+  );
+};
 
-watch(() => menuStore.isMenuMobileActive, (value) => {
-  if (value) {
-    bindOutsideClickListener();
-  } else {
-    unbindOutsideClickListener();
+watch(
+  () => menuStore.isMenuMobileActive,
+  (value) => {
+    if (value) {
+      bindOutsideClickListener();
+    } else {
+      unbindOutsideClickListener();
+    }
   }
-});
+);
 </script>
 
 <template>

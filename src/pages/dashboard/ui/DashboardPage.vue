@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
-import { ref } from 'vue'
-import { plural } from '../../../shared/utils'
+import { ref } from 'vue';
+import { plural } from '@/shared/utils';
 
 const products = ref([
   {
@@ -38,7 +37,7 @@ const products = ref([
     price: 129,
     daysLeft: 0,
     status: false
-  },
+  }
 ]);
 
 const formatCurrency = (value: number) => {
@@ -126,7 +125,7 @@ const formatCurrency = (value: number) => {
           <h5>Мои подписки</h5>
           <Button icon="pi pi-plus" label="Создать" />
         </div>
-        <Divider/>
+        <Divider />
         <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
           <Column field="name" header="Название" :sortable="true" style="width: 25%"></Column>
           <Column field="price" header="Стоимость" :sortable="true" style="width: 25%">
@@ -138,17 +137,29 @@ const formatCurrency = (value: number) => {
             <template #body="slotProps">
               <template v-if="slotProps.data.daysLeft > 31">
                 <Tag icon="pi pi-clock" severity="success">
-                  {{ slotProps.data.daysLeft + ' ' +  plural(['день', 'дня', 'дней'], slotProps.data.daysLeft) }}
+                  {{
+                    slotProps.data.daysLeft +
+                    ' ' +
+                    plural(['день', 'дня', 'дней'], slotProps.data.daysLeft)
+                  }}
                 </Tag>
               </template>
               <template v-else-if="slotProps.data.daysLeft <= 31 && slotProps.data.daysLeft >= 15">
                 <Tag icon="pi pi-clock" severity="warn">
-                  {{ slotProps.data.daysLeft + ' ' +  plural(['день', 'дня', 'дней'], slotProps.data.daysLeft) }}
+                  {{
+                    slotProps.data.daysLeft +
+                    ' ' +
+                    plural(['день', 'дня', 'дней'], slotProps.data.daysLeft)
+                  }}
                 </Tag>
               </template>
               <template v-else>
                 <Tag icon="pi pi-clock" severity="danger">
-                  {{ slotProps.data.daysLeft + ' ' +  plural(['день', 'дня', 'дней'], slotProps.data.daysLeft) }}
+                  {{
+                    slotProps.data.daysLeft +
+                    ' ' +
+                    plural(['день', 'дня', 'дней'], slotProps.data.daysLeft)
+                  }}
                 </Tag>
               </template>
             </template>
@@ -170,19 +181,11 @@ const formatCurrency = (value: number) => {
             </template>
           </Column>
           <Column>
-            <template #body="slotProps">
+            <template>
               <div class="flex align-items-center justify-content-end gap-2">
-                <Button
-                  icon="pi pi-pencil"
-                />
-                <Button
-                  icon="pi pi-trash"
-                  severity="danger"
-                />
-                <Button
-                  icon="pi pi-eye"
-                  severity="danger"
-                />
+                <Button icon="pi pi-pencil" />
+                <Button icon="pi pi-trash" severity="danger" />
+                <Button icon="pi pi-eye" severity="danger" />
               </div>
             </template>
           </Column>
