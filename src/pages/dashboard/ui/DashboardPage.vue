@@ -1,44 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { plural } from '@/shared/utils';
+import { useSubscriptionStore } from '@/entities/subscription/model';
+import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/subscription/delete'
 
-const products = ref([
-  {
-    id: '1001',
-    name: 'Подписка 1',
-    price: 199,
-    daysLeft: 156,
-    status: true
-  },
-  {
-    id: '1002',
-    name: 'Подписка 2',
-    price: 295,
-    daysLeft: 29,
-    status: true
-  },
-  {
-    id: '1003',
-    name: 'Подписка 3',
-    price: 664,
-    daysLeft: 49,
-    status: true
-  },
-  {
-    id: '1004',
-    name: 'Подписка 4',
-    price: 1293,
-    daysLeft: 14,
-    status: true
-  },
-  {
-    id: '1005',
-    name: 'Подписка 5',
-    price: 129,
-    daysLeft: 0,
-    status: false
-  }
-]);
+const subscriptionStore = useSubscriptionStore();
 
 const formatCurrency = (value: number) => {
   return value.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' });
@@ -126,65 +91,49 @@ const formatCurrency = (value: number) => {
           <Button icon="pi pi-plus" label="Создать" />
         </div>
         <Divider />
-        <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
+        <DataTable :value="subscriptionStore.subscriptions" :rows="5" :paginator="true" responsiveLayout="scroll">
           <Column field="name" header="Название" :sortable="true" style="width: 25%"></Column>
           <Column field="price" header="Стоимость" :sortable="true" style="width: 25%">
             <template #body="slotProps">
               {{ formatCurrency(slotProps.data.price) }}
             </template>
           </Column>
-          <Column field="daysLeft" header="Осталось дней" :sortable="true" style="width: 25%">
+          <Column field="diffDays" header="Осталось дней" :sortable="true" style="width: 25%">
             <template #body="slotProps">
-              <template v-if="slotProps.data.daysLeft > 31">
+              <template v-if="slotProps.data.diffDays > 31">
                 <Tag icon="pi pi-clock" severity="success">
                   {{
-                    slotProps.data.daysLeft +
+                    slotProps.data.diffDays +
                     ' ' +
-                    plural(['день', 'дня', 'дней'], slotProps.data.daysLeft)
+                    plural(['день', 'дня', 'дней'], slotProps.data.diffDays)
                   }}
                 </Tag>
               </template>
-              <template v-else-if="slotProps.data.daysLeft <= 31 && slotProps.data.daysLeft >= 15">
+              <template v-else-if="slotProps.data.diffDays <= 31 && slotProps.data.diffDays >= 15">
                 <Tag icon="pi pi-clock" severity="warn">
                   {{
-                    slotProps.data.daysLeft +
+                    slotProps.data.diffDays +
                     ' ' +
-                    plural(['день', 'дня', 'дней'], slotProps.data.daysLeft)
+                    plural(['день', 'дня', 'дней'], slotProps.data.diffDays)
                   }}
                 </Tag>
               </template>
               <template v-else>
                 <Tag icon="pi pi-clock" severity="danger">
                   {{
-                    slotProps.data.daysLeft +
+                    slotProps.data.diffDays +
                     ' ' +
-                    plural(['день', 'дня', 'дней'], slotProps.data.daysLeft)
+                    plural(['день', 'дня', 'дней'], slotProps.data.diffDays)
                   }}
                 </Tag>
               </template>
             </template>
           </Column>
-          <Column field="status" header="Статус подписки" :sortable="true" style="width: 25%">
-            <template #body="slotProps">
-              <template v-if="slotProps.data.status">
-                <div class="circle-status flex align-items-center gap-2">
-                  <span class="bg-green-500"></span>
-                  <span>Активная</span>
-                </div>
-              </template>
-              <template v-else>
-                <div class="circle-status flex align-items-center gap-2">
-                  <span class="bg-red-500"></span>
-                  <span>Неактивная</span>
-                </div>
-              </template>
-            </template>
-          </Column>
           <Column>
-            <template>
+            <template #body="slotProps">
               <div class="flex align-items-center justify-content-end gap-2">
                 <Button icon="pi pi-pencil" />
-                <Button icon="pi pi-trash" severity="danger" />
+                <DeleteSubscriptionButton :id="slotProps.data.id" />
                 <Button icon="pi pi-eye" severity="danger" />
               </div>
             </template>
@@ -193,6 +142,7 @@ const formatCurrency = (value: number) => {
       </div>
     </div>
   </div>
+  <DeleteSubscriptionDialog />
 </template>
 
 <style scoped lang="scss">

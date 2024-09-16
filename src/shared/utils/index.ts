@@ -10,3 +10,16 @@ export const plural = (forms: Array<string>, n: number) => {
   }
   return forms[idx] || '';
 };
+
+
+export const calculateDayDifferenceBetweenDates = (_dateStart: string, _dateEnd: string) => {
+  const dateStart: Date = new Date(_dateStart);
+  const dateEnd: Date = new Date(_dateEnd);
+
+  if (dateEnd >= dateStart) {
+    const diffInTime: number = dateEnd.getTime() - dateStart.getTime();
+    return diffInTime / (1000 * 60 * 60 * 24);
+  } else {
+    return null;
+  }
+}
