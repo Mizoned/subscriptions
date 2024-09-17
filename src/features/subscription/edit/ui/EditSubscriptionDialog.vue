@@ -5,7 +5,7 @@ import type { ICreateSubscription } from '@/entities/subscription/model/types'
 
 const subscriptionStore = useSubscriptionStore();
 
-const newSubscription = ref<ICreateSubscription>({
+const subscriptionData = ref<ICreateSubscription>({
   name: '',
   price: null,
   dateStart: null,
@@ -13,42 +13,52 @@ const newSubscription = ref<ICreateSubscription>({
 });
 
 const closeDialog = () => {
-  newSubscription.value = {
+  subscriptionData.value = {
     name: '',
     price: null,
     dateStart: null,
     dateEnd: null,
   }
 
-  subscriptionStore.closeCreateDialog();
+  subscriptionStore.closeEditDialog();
 }
 
 const saveDialog = () => {
-  subscriptionStore.createSubscriptionHandler({ ...newSubscription.value });
+  subscriptionStore.editSubscriptionHandler({ ...subscriptionData.value });
   closeDialog();
+}
+
+const showDialogHandler = () => {
+  subscriptionData.value = {
+    name: subscriptionStore.subscriptionToBeSelected!.name,
+    price: subscriptionStore.subscriptionToBeSelected!.price,
+    dateStart: new Date(subscriptionStore.subscriptionToBeSelected!.dateStart),
+    dateEnd: new Date(subscriptionStore.subscriptionToBeSelected!.dateEnd)
+  }
 }
 </script>
 
 <template>
   <Dialog
-    v-model:visible="subscriptionStore.isOpenCreateDialog"
+    v-model:visible="subscriptionStore.isOpenEditDialog"
     :style="{ width: '450px' }"
-    header="Создать подписку"
-    :modal="true"
+    header="Редактировать подписку"
+    @show="showDialogHandler"
     @close="closeDialog"
+    :modal="true"
     class="p-fluid"
   >
     <div class="field flex flex-column">
       <label for="name">Название</label>
       <InputText
-        v-model.trim="newSubscription.name"
+        v-model.trim="subscriptionData.name"
         id="name"
       />
     </div>
     <div class="field flex flex-column">
       <label for="price">Стоимость</label>
       <InputNumber
-        v-model.trim="newSubscription.price"
+        v-model.trim="subscriptionData.price"
         mode="currency"
         currency="RUB"
         input-id="price"
@@ -57,7 +67,7 @@ const saveDialog = () => {
     <div class="field flex flex-column">
       <label for="dateStart">Дата подключения</label>
       <DatePicker
-        v-model="newSubscription.dateStart"
+        v-model="subscriptionData.dateStart"
         input-id="dateStart"
         date-format="dd.mm.yy"
       />
@@ -65,7 +75,7 @@ const saveDialog = () => {
     <div class="field flex flex-column">
       <label for="dateEnd">Дата отключения</label>
       <DatePicker
-        v-model="newSubscription.dateEnd"
+        v-model="subscriptionData.dateEnd"
         input-id="dateEnd"
         date-format="dd.mm.yy"
       />

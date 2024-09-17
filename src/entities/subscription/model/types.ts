@@ -8,7 +8,7 @@ export interface ISubscriptionModel {
 }
 
 export interface ISubscription extends ISubscriptionModel {
-  diffDays: number | null;
+  diffDays: number;
 }
 
 export interface ICreateSubscription {

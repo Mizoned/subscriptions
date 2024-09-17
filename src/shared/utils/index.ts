@@ -12,15 +12,15 @@ export const plural = (forms: Array<string>, n: number) => {
 };
 
 
-export const calculateDayDifferenceBetweenDates = (_dateStart: string, _dateEnd: string) => {
+export const calculateDayDifferenceBetweenDates = (_dateStart: string, _dateEnd: string): number => {
   const dateStart: Date = new Date(_dateStart);
   const dateEnd: Date = new Date(_dateEnd);
 
   if (dateEnd >= dateStart) {
     const diffInTime: number = dateEnd.getTime() - dateStart.getTime();
-    return diffInTime / (1000 * 60 * 60 * 24);
+    return Math.floor(diffInTime / (1000 * 60 * 60 * 24));
   } else {
-    return null;
+    return 0;
   }
 }
 

@@ -50,26 +50,49 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
   const isOpenDeleteDialog = ref<boolean>(false);
   const isOpenCreateDialog = ref<boolean>(false);
   const isOpenViewDialog = ref<boolean>(false);
-  const subscriptionToBeDeletedId = ref<number | null>(null);
-  const subscriptionToBeViewedId = ref<number | null>(null);
+  const isOpenEditDialog = ref<boolean>(false);
+  const subscriptionToBeSelectedId = ref<number | null>(null);
+  const subscriptionToBeSelected = computed<ISubscription | undefined>(() => subscriptions.value.find((item) => item.id === subscriptionToBeSelectedId.value));
 
   const subscriptions = computed<ISubscription[]>(() =>
     subscriptionModels.value.map((s) => ({
       ...s,
-      diffDays: calculateDayDifferenceBetweenDates(s.dateStart, s.dateEnd),
+      diffDays: calculateDayDifferenceBetweenDates(new Date().toDateString(), s.dateEnd),
     }))
   );
 
-  const subscriptionToBeViewed = computed<ISubscription | undefined>(() => subscriptions.value.find((item) => item.id === subscriptionToBeViewedId.value));
+  const activeSubscriptions = computed<ISubscription[]>(() => subscriptions.value.filter((s) => s.diffDays > 0));
+
+  const openEditDialog = (id: number) => {
+    subscriptionToBeSelectedId.value = id;
+    isOpenEditDialog.value = true;
+  }
+
+  const closeEditDialog = () => {
+    isOpenEditDialog.value = false;
+    subscriptionToBeSelectedId.value = null;
+  }
+
+  const editSubscriptionHandler = (subscription: ICreateSubscription) => {
+    const foundSubscription: ISubscriptionModel | undefined = subscriptionModels.value.find((item) => item.id === subscriptionToBeSelectedId.value);
+
+    if (subscriptionToBeSelectedId.value && foundSubscription !== undefined) {
+
+      foundSubscription.name = subscription.name;
+      foundSubscription.price = subscription.price ?? 0;
+      foundSubscription.dateStart = subscription.dateStart!.toDateString();
+      foundSubscription.dateEnd = subscription.dateEnd!.toDateString();
+    }
+  }
 
   const openViewDialog = (id: number) => {
-    subscriptionToBeViewedId.value = id;
+    subscriptionToBeSelectedId.value = id;
     isOpenViewDialog.value = true;
   }
 
   const closeViewDialog = () => {
     isOpenViewDialog.value = false;
-    subscriptionToBeViewedId.value = null;
+    subscriptionToBeSelectedId.value = null;
   }
 
   const openCreateDialog = () => {
@@ -98,18 +121,18 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
   }
 
   const openDeleteDialog = (id: number) => {
-    subscriptionToBeDeletedId.value = id;
+    subscriptionToBeSelectedId.value = id;
     isOpenDeleteDialog.value = true;
   }
 
   const closeDeleteDialog = () => {
     isOpenDeleteDialog.value = false;
-    subscriptionToBeDeletedId.value = null;
+    subscriptionToBeSelectedId.value = null;
   }
 
   const deleteSubscriptionHandler = async () => {
-    if (subscriptionToBeDeletedId.value !== null) {
-      const id = await deleteSubscription(subscriptionToBeDeletedId.value);
+    if (subscriptionToBeSelectedId.value !== null) {
+      const id = await deleteSubscription(subscriptionToBeSelectedId.value);
 
       subscriptionModels.value = [...subscriptionModels.value].filter(item => item.id !== id);
       console.log('Удаление подписки с id: ', id);
@@ -129,10 +152,15 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     createSubscriptionHandler,
     openViewDialog,
     closeViewDialog,
+    openEditDialog,
+    closeEditDialog,
+    editSubscriptionHandler,
     subscriptions,
+    activeSubscriptions,
     isOpenDeleteDialog,
     isOpenCreateDialog,
     isOpenViewDialog,
-    subscriptionToBeViewed,
+    isOpenEditDialog,
+    subscriptionToBeSelected,
   }
 });

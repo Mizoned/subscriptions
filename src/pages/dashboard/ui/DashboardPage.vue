@@ -3,10 +3,28 @@ import { formatCurrency, plural } from '@/shared/utils'
 import { useSubscriptionStore } from '@/entities/subscription/model';
 import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/subscription/delete';
 import { CreateSubscriptionButton, CreateSubscriptionDialog } from '@/features/subscription/create';
-import ViewSubscriptionButton from '@/features/subscription/view/ui/ViewSubscriptionButton.vue'
-import ViewSubscriptionDialog from '@/features/subscription/view/ui/ViewSubscriptionDialog.vue'
+import { ViewSubscriptionButton, ViewSubscriptionDialog } from '@/features/subscription/view';
+import { EditSubscriptionButton, EditSubscriptionDialog } from '@/features/subscription/edit';
+import { computed } from 'vue';
+import type { ISubscription } from '@/entities/subscription/model/types';
 
 const subscriptionStore = useSubscriptionStore();
+
+const subscriptionCostPerMonth = computed<number | null>(() => {
+  return subscriptionStore.activeSubscriptions?.reduce((acc, subscription) => acc + subscription.price, 0) / 12 ?? null;
+});
+
+const subscriptionCostTotal = computed<number | null>(() => {
+  return subscriptionStore.activeSubscriptions?.reduce((acc, subscription) => acc + subscription.price, 0) ?? null;
+});
+
+const nextWriteOffSubscription = computed<ISubscription | null>(() => {
+  if (subscriptionStore.activeSubscriptions.length) {
+    return subscriptionStore.activeSubscriptions.reduce((prevSub, currSub) => currSub.diffDays < prevSub.diffDays ? currSub : prevSub);
+  }
+
+  return null;
+});
 </script>
 
 <template>
@@ -19,12 +37,10 @@ const subscriptionStore = useSubscriptionStore();
               <div class="flex align-items-center gap-2">
                 <span class="text-500 font-medium">Стоимость подписок в месяц</span>
               </div>
-              <div class="text-900 font-medium text-xl">126,56 ₽</div>
+              <div class="text-900 font-medium text-xl">
+                {{ subscriptionCostPerMonth ? formatCurrency(subscriptionCostPerMonth) : formatCurrency(0) }}
+              </div>
             </div>
-          </div>
-          <div class="statistic-card__footer">
-            <span class="text-green-500 font-medium">60 ₽</span>
-            <span class="text-500">выросло</span>
           </div>
         </div>
       </div>
@@ -37,12 +53,10 @@ const subscriptionStore = useSubscriptionStore();
               <div class="flex align-items-center gap-2">
                 <span class="text-500 font-medium">Стоимость подписок</span>
               </div>
-              <div class="text-900 font-medium text-xl">6,560 ₽</div>
+              <div class="text-900 font-medium text-xl">
+                {{ subscriptionCostTotal ? formatCurrency(subscriptionCostTotal) : formatCurrency(0) }}
+              </div>
             </div>
-          </div>
-          <div class="statistic-card__footer">
-            <span class="text-green-500 font-medium">60 ₽</span>
-            <span class="text-500">выросло</span>
           </div>
         </div>
       </div>
@@ -55,11 +69,11 @@ const subscriptionStore = useSubscriptionStore();
               <div class="flex align-items-center gap-2">
                 <span class="text-500 font-medium">Дней до следующего списания</span>
               </div>
-              <div class="text-900 font-medium text-xl">5</div>
+              <div class="text-900 font-medium text-xl">{{ nextWriteOffSubscription ? nextWriteOffSubscription.diffDays : 'Нет списания' }}</div>
             </div>
           </div>
-          <div class="statistic-card__footer">
-            <span class="text-green-500 font-medium">179 ₽</span>
+          <div v-if="nextWriteOffSubscription" class="statistic-card__footer">
+            <span class="text-green-500 font-medium">{{ formatCurrency(nextWriteOffSubscription.price) }}</span>
             <span class="text-500">спишется</span>
           </div>
         </div>
@@ -73,12 +87,9 @@ const subscriptionStore = useSubscriptionStore();
               <div class="flex align-items-center gap-2">
                 <span class="text-500 font-medium">Активные подписки</span>
               </div>
-              <div class="text-900 font-medium text-xl">3/5</div>
+              <div v-if="subscriptionStore.subscriptions.length" class="text-900 font-medium text-xl">{{ subscriptionStore.activeSubscriptions.length + '/' + subscriptionStore.subscriptions.length }}</div>
+              <div v-else class="text-900 font-medium text-xl">Нет подписок</div>
             </div>
-          </div>
-          <div class="statistic-card__footer">
-            <span class="text-green-500 font-medium">2</span>
-            <span class="text-500">неактивны</span>
           </div>
         </div>
       </div>
@@ -131,7 +142,7 @@ const subscriptionStore = useSubscriptionStore();
           <Column>
             <template #body="slotProps">
               <div class="flex align-items-center justify-content-end gap-2">
-                <Button icon="pi pi-pencil" />
+                <EditSubscriptionButton :id="slotProps.data.id" />
                 <DeleteSubscriptionButton :id="slotProps.data.id" />
                 <ViewSubscriptionButton :id="slotProps.data.id" />
               </div>
@@ -144,6 +155,7 @@ const subscriptionStore = useSubscriptionStore();
   <CreateSubscriptionDialog />
   <DeleteSubscriptionDialog />
   <ViewSubscriptionDialog />
+  <EditSubscriptionDialog />
 </template>
 
 <style scoped lang="scss">
