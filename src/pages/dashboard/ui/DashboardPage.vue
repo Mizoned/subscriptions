@@ -165,14 +165,6 @@ const nextWriteOffSubscription = computed<ISubscription | null>(() => {
   padding: 2rem;
 }
 
-.circle-status {
-  span:first-child {
-    border-radius: 50%;
-    width: 0.5rem;
-    height: 0.5rem;
-  }
-}
-
 .statistic-card {
   display: flex;
   flex-direction: column;
