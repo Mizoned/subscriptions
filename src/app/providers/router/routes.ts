@@ -17,5 +17,15 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/settings')
       }
     ]
+  },
+  {
+    path: '/sign-up',
+    name: 'signup',
+    component: () => import('@/pages/sign-up')
+  },
+  {
+    path: '/sign-in',
+    name: 'signin',
+    component: () => import('@/pages/sign-in')
   }
 ];
