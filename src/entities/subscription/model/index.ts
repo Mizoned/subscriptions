@@ -5,43 +5,7 @@ import type { ICreateSubscription, ISubscription, ISubscriptionModel } from '@/e
 import { calculateDayDifferenceBetweenDates } from '@/shared/utils'
 
 export const useSubscriptionStore = defineStore('subscriptionStore', () => {
-  const subscriptionModels = ref<ISubscriptionModel[]>([
-    {
-      id: 1001,
-      name: 'Подписка 1',
-      price: 199,
-      dateStart: '2024-09-16',
-      dateEnd: '2025-09-16',
-    },
-    {
-      id: 1002,
-      name: 'Подписка 2',
-      price: 295,
-      dateStart: '2024-09-01',
-      dateEnd: '2024-09-01',
-    },
-    {
-      id: 1003,
-      name: 'Подписка 3',
-      price: 664,
-      dateStart: '2024-04-01',
-      dateEnd: '2024-10-01',
-    },
-    {
-      id: 1004,
-      name: 'Подписка 4',
-      price: 1293,
-      dateStart: '2024-04-01',
-      dateEnd: '2024-09-01',
-    },
-    {
-      id: 1005,
-      name: 'Подписка 5',
-      price: 129,
-      dateStart: '2024-09-16',
-      dateEnd: '2024-12-16',
-    }
-  ]);
+  const subscriptionModels = ref<ISubscriptionModel[]>([]);
   const isOpenDeleteDialog = ref<boolean>(false);
   const isOpenCreateDialog = ref<boolean>(false);
   const isOpenViewDialog = ref<boolean>(false);
