@@ -4,8 +4,7 @@ import { ref } from 'vue';
 const settings = ref({
   email: '',
   oldPassword: '',
-  newPassword: '',
-  confirmPassword: '',
+  newPassword: ''
 });
 </script>
 
@@ -45,16 +44,6 @@ const settings = ref({
             weakLabel="Слабый"
             mediumLabel="Средний"
             strongLabel="Хороший"
-          />
-        </div>
-        <div class="field flex flex-column">
-          <label for="confirmPassword">Подтверждение нового пароля</label>
-          <Password
-            input-class="w-full"
-            v-model.trim="settings.confirmPassword"
-            input-id="confirmPassword"
-            toggleMask
-            :feedback="false"
           />
         </div>
         <div class="field">
