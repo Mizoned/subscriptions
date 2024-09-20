@@ -9,12 +9,14 @@ export const routes: RouteRecordRaw[] = [
       {
         path: '/',
         name: 'dashboard',
-        component: () => import('@/pages/dashboard')
+        component: () => import('@/pages/dashboard'),
+        meta: { requiresAuth: true }
       },
       {
         path: '/settings',
         name: 'settings',
-        component: () => import('@/pages/settings')
+        component: () => import('@/pages/settings'),
+        meta: { requiresAuth: true }
       }
     ]
   },

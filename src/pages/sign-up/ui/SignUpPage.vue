@@ -1,8 +1,57 @@
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/entities/auth';
+import { VALIDATION_MESSAGES as VALIDATION_ERROR } from '@/shared/validator';
+import { type ServerErrors, useVuelidate } from '@vuelidate/core';
+import { helpers, maxLength, minLength, required, email as emailValidator } from '@vuelidate/validators';
+import { type ResponseError } from '@/shared/api';
 
 const email = ref('');
 const password = ref('');
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const rules = computed(() => ({
+  email: {
+    required: helpers.withMessage(VALIDATION_ERROR.IS_NOT_EMPTY, required),
+    email: helpers.withMessage(VALIDATION_ERROR.IS_EMAIL, emailValidator)
+  },
+  password: {
+    required: helpers.withMessage(VALIDATION_ERROR.IS_NOT_EMPTY, required),
+    minLength: helpers.withMessage(VALIDATION_ERROR.IS_PASSWORD_MIN_LENGTH, minLength(8)),
+    maxLength: helpers.withMessage(VALIDATION_ERROR.IS_PASSWORD_MAX_LENGTH, maxLength(32))
+  }
+}));
+
+const $externalResults = ref<ServerErrors>({
+  email: '',
+  password: ''
+});
+
+const $v = useVuelidate(rules, { email, password }, { $externalResults });
+
+const submitHandler = async () => {
+  if (!(await $v.value.$validate())) return;
+
+  await authStore.signUp(email.value, password.value)
+    .then(() => {
+      router.push({ name: 'dashboard' })
+    })
+    .catch((e) => {
+      const errors: ResponseError[] = e?.response?.data?.errors as ResponseError[];
+      errors?.forEach((error: ResponseError) => {
+        $externalResults.value[error.property] = error.message;
+      });
+    });
+}
+
+const resetExternalResultProperty = (value: string | undefined, propertyName: keyof ServerErrors) => {
+  if (value && value.length > 0) {
+    $externalResults.value[propertyName] = '';
+  }
+}
 </script>
 
 <template>
@@ -32,16 +81,59 @@ const password = ref('');
             <span class="text-muted-color font-medium">Регистрация</span>
           </div>
           <div>
-            <div class="field">
+            <div class="field flex flex-column">
               <label for="email1" class="flex text-lg mb-2">Электронная почта</label>
-              <InputText id="email1" type="text" placeholder="Электронная почта" class="w-full md:w-25rem mb-2" v-model="email" />
+              <InputText
+                id="email1"
+                type="text"
+                placeholder="Электронный адрес"
+                class="w-full lg:w-30rem"
+                style="padding: 1rem"
+                v-model="email"
+                @blur="$v.email.$touch()"
+                :invalid="$v.email.$invalid && $v.email.$error"
+                @update:modelValue="resetExternalResultProperty($event, 'email')"
+              />
+              <small
+                v-if="$v.email?.$errors[0]?.$message"
+                id="email-help"
+                class="p-error"
+              >
+                {{ $v.email?.$errors[0]?.$message }}
+              </small>
             </div>
 
-            <div class="field">
+            <div class="field flex flex-column">
               <label for="password1" class="flex text-lg mb-2">Пароль</label>
-              <Password id="password1" v-model="password" placeholder="Пароль" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
+              <Password
+                id="password"
+                v-model="password"
+                placeholder="Пароль"
+                toggleMask
+                :feedback="false"
+                class="w-full"
+                aria-describedby="password-help"
+                inputClass="w-full"
+                :inputStyle="{ padding: '1rem' }"
+                @blur="$v.password.$touch()"
+                @update:modelValue="resetExternalResultProperty($event, 'password')"
+                :invalid="$v.password.$invalid && $v.password.$error"
+              />
+              <small
+                v-if="$v.password?.$errors[0]?.$message"
+                id="password-help"
+                class="p-error"
+              >
+                {{ $v.password?.$errors[0]?.$message }}
+              </small>
             </div>
-            <Button label="Sign In" class="w-full" as="router-link" to="/"></Button>
+            <Button
+              @click="submitHandler"
+              label="Войти"
+              class="w-full p-3 text-lg"
+              :loading="authStore.isLoading"
+              :disabled="($v.email.$invalid && $v.email.$error) || ($v.password.$invalid && $v.password.$error)"
+            />
           </div>
         </div>
       </div>

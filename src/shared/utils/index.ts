@@ -27,3 +27,11 @@ export const calculateDayDifferenceBetweenDates = (_dateStart: string, _dateEnd:
 export const formatCurrency = (value: number) => {
   return value.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' });
 };
+
+export const getEnvVariable = (key: string) => {
+  if (import.meta.env[key] === undefined) {
+    throw new Error(`Env variable ${key} is required`);
+  }
+
+  return import.meta.env[key];
+};

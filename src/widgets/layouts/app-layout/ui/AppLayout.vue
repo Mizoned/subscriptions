@@ -3,9 +3,11 @@ import AppHeader from './AppHeader.vue';
 import AppSidebar from './AppSidebar.vue';
 import { ref, watch } from 'vue';
 import { useMenuStore } from '../model';
+import { useAuthStore } from '@/entities/auth';
 
 const outsideClickListener = ref<null | ((event: any) => void)>(null);
 const menuStore = useMenuStore();
+const authStore = useAuthStore();
 
 const bindOutsideClickListener = () => {
   if (!outsideClickListener.value) {
@@ -56,6 +58,14 @@ watch(
     </div>
     <div class="app-layout__sidebar">
       <AppSidebar />
+      <Button
+        class="app-sidebar-logout w-full justify-content-start"
+        severity="danger"
+        text
+        label="Выйти"
+        icon="pi pi-sign-out"
+        @click="authStore.logout"
+      />
     </div>
     <div class="app-layout__container">
       <div class="app-layout__main">
@@ -68,6 +78,10 @@ watch(
 </template>
 
 <style scoped lang="scss">
+.app-sidebar-logout {
+  margin-top: auto;
+}
+
 .app-layout {
   $root: #{&};
   min-height: 100vh;
@@ -89,6 +103,9 @@ watch(
   &__sidebar {
     position: fixed;
     width: 20rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     z-index: 999;
     overflow-y: auto;
     user-select: none;

@@ -24,6 +24,10 @@ const sidebarItems = ref<ISidebarItem[]>([
 </template>
 
 <style scoped lang="scss">
+.app-sidebar-logout {
+  margin-top: auto;
+}
+
 .app-sidebar {
   margin: 0;
   padding: 0;
