@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue'
-import { deleteSubscription } from '@/entities/subscription/api'
+import { deleteSubscription, createSubscription, updateSubscription, getAllSubscriptions } from '@/entities/subscription/api'
 import type { ICreateSubscription, ISubscription, ISubscriptionModel } from '@/entities/subscription/model/types'
 import { calculateDayDifferenceBetweenDates } from '@/shared/utils'
 
@@ -12,7 +12,6 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       price: 199,
       dateStart: '2024-09-16',
       dateEnd: '2025-09-16',
-      deleted: false
     },
     {
       id: 1002,
@@ -20,7 +19,6 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       price: 295,
       dateStart: '2024-09-01',
       dateEnd: '2024-09-01',
-      deleted: false
     },
     {
       id: 1003,
@@ -28,7 +26,6 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       price: 664,
       dateStart: '2024-04-01',
       dateEnd: '2024-10-01',
-      deleted: false
     },
     {
       id: 1004,
@@ -36,7 +33,6 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       price: 1293,
       dateStart: '2024-04-01',
       dateEnd: '2024-09-01',
-      deleted: false
     },
     {
       id: 1005,
@@ -44,13 +40,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       price: 129,
       dateStart: '2024-09-16',
       dateEnd: '2024-12-16',
-      deleted: false
     }
   ]);
   const isOpenDeleteDialog = ref<boolean>(false);
   const isOpenCreateDialog = ref<boolean>(false);
   const isOpenViewDialog = ref<boolean>(false);
   const isOpenEditDialog = ref<boolean>(false);
+  const isCreateLoading = ref<boolean>(false);
   const subscriptionToBeSelectedId = ref<number | null>(null);
   const subscriptionToBeSelected = computed<ISubscription | undefined>(() => subscriptions.value.find((item) => item.id === subscriptionToBeSelectedId.value));
 
@@ -73,15 +69,27 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     subscriptionToBeSelectedId.value = null;
   }
 
-  const editSubscriptionHandler = (subscription: ICreateSubscription) => {
+  const getAllSubscriptionHandler = async () => {
+    const response = getAllSubscriptions();
+    const data = (await response).data;
+    subscriptionModels.value = data;
+  }
+
+  const editSubscriptionHandler = async (subscription: ICreateSubscription) => {
     const foundSubscription: ISubscriptionModel | undefined = subscriptionModels.value.find((item) => item.id === subscriptionToBeSelectedId.value);
 
     if (subscriptionToBeSelectedId.value && foundSubscription !== undefined) {
-
       foundSubscription.name = subscription.name;
       foundSubscription.price = subscription.price ?? 0;
       foundSubscription.dateStart = subscription.dateStart!.toDateString();
       foundSubscription.dateEnd = subscription.dateEnd!.toDateString();
+
+      try {
+        const response = await updateSubscription(foundSubscription);
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
     }
   }
 
@@ -103,21 +111,23 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     isOpenCreateDialog.value = false;
   }
 
-  const createSubscriptionHandler = (subscription: ICreateSubscription) => {
-    const min = Math.ceil(1005);
-    const max = Math.floor(2000);
-    const id = Math.floor(Math.random() * (max - min) + min);
-
-    const newSubscription: ISubscriptionModel = {
-      id,
+  const createSubscriptionHandler = async (subscription: ICreateSubscription) => {
+    const newSubscription: ICreateSubscription = {
       name: subscription.name,
       price: subscription.price ?? 0,
-      dateStart: subscription.dateStart!.toDateString(),
-      dateEnd: subscription.dateEnd!.toDateString(),
-      deleted: false
+      dateStart: subscription?.dateStart?.toDateString() ?? null,
+      dateEnd: subscription?.dateEnd?.toDateString() ?? null,
     }
 
-    subscriptionModels.value.push(newSubscription);
+    try {
+      isCreateLoading.value = true;
+      const response = await createSubscription(newSubscription);
+      const data = response.data;
+      subscriptionModels.value.push(data);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 
   const openDeleteDialog = (id: number) => {
@@ -132,12 +142,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
 
   const deleteSubscriptionHandler = async () => {
     if (subscriptionToBeSelectedId.value !== null) {
-      const id = await deleteSubscription(subscriptionToBeSelectedId.value);
+      const response = await deleteSubscription(subscriptionToBeSelectedId.value);
+      if (response.data.deletedCount) {
+        subscriptionModels.value = [...subscriptionModels.value].filter(item => item.id !== subscriptionToBeSelectedId.value);
+        closeDeleteDialog();
+      }
 
-      subscriptionModels.value = [...subscriptionModels.value].filter(item => item.id !== id);
-      console.log('Удаление подписки с id: ', id);
-      closeDeleteDialog();
-      return id;
+      return null;
     }
 
     return null;
@@ -155,6 +166,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     openEditDialog,
     closeEditDialog,
     editSubscriptionHandler,
+    getAllSubscriptionHandler,
     subscriptions,
     activeSubscriptions,
     isOpenDeleteDialog,

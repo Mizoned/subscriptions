@@ -4,7 +4,6 @@ export interface ISubscriptionModel {
   price: number;
   dateStart: string;
   dateEnd: string;
-  deleted: boolean;
 }
 
 export interface ISubscription extends ISubscriptionModel {

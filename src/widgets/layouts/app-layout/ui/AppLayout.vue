@@ -4,10 +4,12 @@ import AppSidebar from './AppSidebar.vue';
 import { ref, watch } from 'vue';
 import { useMenuStore } from '../model';
 import { useAuthStore } from '@/entities/auth';
+import { useRouter } from 'vue-router';
 
 const outsideClickListener = ref<null | ((event: any) => void)>(null);
 const menuStore = useMenuStore();
 const authStore = useAuthStore();
+const router = useRouter();
 
 const bindOutsideClickListener = () => {
   if (!outsideClickListener.value) {
@@ -49,6 +51,11 @@ watch(
     }
   }
 );
+
+const logoutHandler  = async () => {
+  await authStore.logout();
+  await router.push({ name: 'signin'});
+}
 </script>
 
 <template>
@@ -64,7 +71,7 @@ watch(
         text
         label="Выйти"
         icon="pi pi-sign-out"
-        @click="authStore.logout"
+        @click="logoutHandler"
       />
     </div>
     <div class="app-layout__container">

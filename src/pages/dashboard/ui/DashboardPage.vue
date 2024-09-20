@@ -5,7 +5,7 @@ import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/s
 import { CreateSubscriptionButton, CreateSubscriptionDialog } from '@/features/subscription/create';
 import { ViewSubscriptionButton, ViewSubscriptionDialog } from '@/features/subscription/view';
 import { EditSubscriptionButton, EditSubscriptionDialog } from '@/features/subscription/edit';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import type { ISubscription } from '@/entities/subscription/model/types';
 
 const subscriptionStore = useSubscriptionStore();
@@ -24,6 +24,10 @@ const nextWriteOffSubscription = computed<ISubscription | null>(() => {
   }
 
   return null;
+});
+
+onMounted(() => {
+  subscriptionStore.getAllSubscriptionHandler();
 });
 </script>
 
@@ -148,6 +152,9 @@ const nextWriteOffSubscription = computed<ISubscription | null>(() => {
               </div>
             </template>
           </Column>
+          <template #empty>
+            <span v-if="!subscriptionStore.subscriptions.length">Список подписок пуст.</span>
+          </template>
         </DataTable>
       </div>
     </div>
