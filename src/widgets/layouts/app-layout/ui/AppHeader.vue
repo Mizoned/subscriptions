@@ -32,10 +32,14 @@ const menuStore = useMenuStore();
       </button>
       <div class="app-header-menu app-header-menu-hidden lg:block">
         <div class="app-header-menu-content">
-          <button type="button" class="app-header-action">
+          <router-link to="/notifications" class="app-header-action">
+            <i class="pi pi-bell" />
+            <span>Уведомления</span>
+          </router-link>
+          <router-link to="/settings" class="app-header-action">
             <i class="pi pi-user"></i>
-            <span>Profile</span>
-          </button>
+            <span>Настройки</span>
+          </router-link>
         </div>
       </div>
     </div>
