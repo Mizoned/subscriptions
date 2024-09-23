@@ -76,16 +76,9 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
   }
 
   const createSubscriptionHandler = async (subscription: ICreateSubscription) => {
-    const newSubscription: ICreateSubscription = {
-      name: subscription.name,
-      price: subscription.price ?? 0,
-      dateStart: subscription?.dateStart?.toDateString() ?? null,
-      dateEnd: subscription?.dateEnd?.toDateString() ?? null,
-    }
-
     try {
       isCreateLoading.value = true;
-      const response = await createSubscription(newSubscription);
+      const response = await createSubscription(subscription);
       const data = response.data;
       subscriptionModels.value.push(data);
     } catch (e) {

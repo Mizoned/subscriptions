@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useSubscriptionStore } from '@/entities/subscription/model'
-import type { ICreateSubscription } from '@/entities/subscription/model/types'
+import { useSubscriptionStore } from '@/entities/subscription/model';
+import type { ICreateSubscription } from '@/entities/subscription/model/types';
 import { helpers, numeric, required } from '@vuelidate/validators';
 import { isDate, VALIDATION_MESSAGES } from '@/shared/validator';
 import { type ServerErrors, useVuelidate } from '@vuelidate/core';
+import { useToast } from 'primevue/usetoast';
 
 const subscriptionStore = useSubscriptionStore();
+const toast = useToast();
 
 const validationRules = computed(() => ({
   name: {
@@ -60,7 +62,10 @@ const resetExternalResultProperty = (propertyName: keyof ICreateSubscription) =>
 const saveDialog = async () => {
   if (!(await $v.value.$validate())) return;
 
-  subscriptionStore.editSubscriptionHandler({ ...subscriptionData.value });
+  subscriptionStore.editSubscriptionHandler({ ...subscriptionData.value })
+    .then(() => {
+      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Подписка успешно изменена', life: 3000 });
+    });
   closeDialog();
 }
 
