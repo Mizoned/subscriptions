@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSubscriptionStore } from '@/entities/subscription/model'
+import { useSubscriptionStore } from '@/entities/subscription'
 
 const subscriptionStore = useSubscriptionStore();
 </script>

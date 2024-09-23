@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { CreateNotification, Notification } from '../types';
+import { useSubscriptionStore } from '@/entities/subscription';
 
 export const useNotificationsStore = defineStore('NotificationStore', () => {
   const notificationsInLocalStorage: string | null = localStorage.getItem('notifications');
   const notifications = ref<Notification[]>(notificationsInLocalStorage ? JSON.parse(notificationsInLocalStorage) : []);
+  const subscriptionStore = useSubscriptionStore();
 
   const filteredAndSortedNotifications = computed(() => {
     return [...notifications.value].sort((a: Notification, b: Notification) => {
@@ -34,7 +36,7 @@ export const useNotificationsStore = defineStore('NotificationStore', () => {
       ...notification,
       id: randomId(0, 10000),
       isRead: false,
-      createdAt: new Date().toDateString()
+      createdAt: new Date().toISOString()
     });
 
     setNotifications();
@@ -51,6 +53,10 @@ export const useNotificationsStore = defineStore('NotificationStore', () => {
       }
     }
   }
+
+  watch(notifications.value, () => {
+    subscriptionStore.checkSubscriptionByTime();
+  });
 
   return {
     addNotification,

@@ -1,6 +1,6 @@
 import { API } from '@/shared/api';
 import type { AxiosResponse } from 'axios';
-import type { ICreateSubscription, ISubscriptionModel } from '@/entities/subscription/model/types';
+import type { ICreateSubscription, ISubscriptionModel } from '@/entities/subscription';
 import type { ResponseDelete } from '@/shared/api/types';
 
 export const deleteSubscription = async (id: number): Promise<AxiosResponse<ResponseDelete>> => {

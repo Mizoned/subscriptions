@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useSubscriptionStore } from '@/entities/subscription/model';
-import type { ICreateSubscription } from '@/entities/subscription/model/types';
+import { useSubscriptionStore } from '@/entities/subscription';
+import type { ICreateSubscription } from '@/entities/subscription';
 import { helpers, required, numeric } from '@vuelidate/validators';
 import { isDate, VALIDATION_MESSAGES } from '@/shared/validator';
 import { type ServerErrors, useVuelidate } from '@vuelidate/core';

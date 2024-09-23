@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { formatCurrency, plural } from '@/shared/utils'
-import { useSubscriptionStore } from '@/entities/subscription/model';
+import { useSubscriptionStore } from '@/entities/subscription';
 import { DeleteSubscriptionButton, DeleteSubscriptionDialog } from '@/features/subscription/delete';
 import { CreateSubscriptionButton, CreateSubscriptionDialog } from '@/features/subscription/create';
 import { ViewSubscriptionButton, ViewSubscriptionDialog } from '@/features/subscription/view';
 import { EditSubscriptionButton, EditSubscriptionDialog } from '@/features/subscription/edit';
 import { computed, onMounted } from 'vue';
-import type { ISubscription } from '@/entities/subscription/model/types';
+import type { ISubscription } from '@/entities/subscription';
 
 const subscriptionStore = useSubscriptionStore();
 

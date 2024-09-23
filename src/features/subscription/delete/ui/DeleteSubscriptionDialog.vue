@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSubscriptionStore } from '@/entities/subscription/model';
+import { useSubscriptionStore } from '@/entities/subscription';
 import { useToast } from 'primevue/usetoast';
 import { useNotificationsStore } from '@/entities/notification';
 

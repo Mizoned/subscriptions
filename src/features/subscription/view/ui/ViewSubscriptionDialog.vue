@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatCurrency } from '@/shared/utils'
-import { useSubscriptionStore } from '@/entities/subscription/model';
+import { useSubscriptionStore } from '@/entities/subscription';
 
 const subscriptionStore = useSubscriptionStore();
 </script>

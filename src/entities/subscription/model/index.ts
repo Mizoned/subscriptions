@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue'
 import { deleteSubscription, createSubscription, updateSubscription, getAllSubscriptions } from '@/entities/subscription/api'
-import type { ICreateSubscription, ISubscription, ISubscriptionModel } from '@/entities/subscription/model/types'
-import { calculateDayDifferenceBetweenDates } from '@/shared/utils'
+import type { ICreateSubscription, ISubscription, ISubscriptionModel } from '@/entities/subscription'
+import { calculateDayDifferenceBetweenDates, plural } from '@/shared/utils';
+import { useNotificationsStore } from '@/entities/notification';
 
 export const useSubscriptionStore = defineStore('subscriptionStore', () => {
   const subscriptionModels = ref<ISubscriptionModel[]>([]);
@@ -13,6 +14,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
   const isCreateLoading = ref<boolean>(false);
   const subscriptionToBeSelectedId = ref<number | null>(null);
   const subscriptionToBeSelected = computed<ISubscription | undefined>(() => subscriptions.value.find((item) => item.id === subscriptionToBeSelectedId.value));
+  const notificationsStore = useNotificationsStore();
 
   const subscriptions = computed<ISubscription[]>(() =>
     subscriptionModels.value.map((s) => ({
@@ -106,6 +108,26 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     }
   }
 
+  const checkSubscriptionByTime = () => {
+    subscriptions.value.forEach((subscription) => {
+      if (subscription.diffDays <= 5) {
+        const existingNotification = notificationsStore.filteredAndSortedNotifications.find(
+          (n) => n.text.includes(subscription.name) && n.type === 'time'
+        );
+
+        if (!existingNotification) {
+          const days = plural(['день', 'дня', 'дней'], subscription.diffDays);
+          notificationsStore.addNotification({
+            type: 'time',
+            text: `Подписка "${subscription.name}" заканчивается через ${subscription.diffDays} ${days}.`,
+          })
+        }
+      }
+    });
+  }
+
+  setInterval(checkSubscriptionByTime, 1000 * 60 * 30);
+
   return {
     openDeleteDialog,
     closeDeleteDialog,
@@ -119,6 +141,7 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
     closeEditDialog,
     editSubscriptionHandler,
     getAllSubscriptionHandler,
+    checkSubscriptionByTime,
     subscriptions,
     activeSubscriptions,
     isOpenDeleteDialog,
