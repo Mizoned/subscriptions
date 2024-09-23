@@ -5,7 +5,7 @@ import { useAuthStore } from '@/entities/auth/model';
 import type { Ref } from 'vue';
 import type { IUpdatePassword, IUser } from '@/entities/auth/types';
 
-export const useUserStore = defineStore('User', () => {
+export const useUserStore = defineStore('UserStore', () => {
   const userData = localStorage.getItem('user');
   const userJSON = userData ? JSON.parse(userData) : null;
   const user: Ref<IUser | null> = ref(userJSON);

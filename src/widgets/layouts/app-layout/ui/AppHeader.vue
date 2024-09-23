@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { AppLogo } from '@/shared/ui/logo';
 import { useMenuStore } from '../model';
+import { useNotificationsStore } from '@/entities/notification';
 const menuStore = useMenuStore();
+const notificationStore = useNotificationsStore();
 </script>
 
 <template>
@@ -32,7 +34,11 @@ const menuStore = useMenuStore();
       </button>
       <div class="app-header-menu app-header-menu-hidden lg:block">
         <div class="app-header-menu-content">
-          <router-link to="/notifications" class="app-header-action">
+          <router-link
+            to="/notifications"
+            class="app-header-action app-header-notification"
+            :class="{'is-active': notificationStore.isActiveNotificationIndicator}"
+          >
             <i class="pi pi-bell" />
             <span>Уведомления</span>
           </router-link>
@@ -81,6 +87,23 @@ const menuStore = useMenuStore();
 
     &:focus-visible {
       @include focused();
+    }
+  }
+
+  .app-header-notification {
+    position: relative;
+
+    &.is-active {
+      &::after {
+        position: absolute;
+        right: 8px;
+        top: 6px;
+        content: '';
+        width: 0.5rem;
+        height: 0.5rem;
+        background-color: var(--red-500);
+        border-radius: 50%;
+      }
     }
   }
 

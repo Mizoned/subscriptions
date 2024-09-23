@@ -149,11 +149,3 @@ const settingsStore = useSettingsStore();
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.card {
-  height: 100%;
-  background: var(--surface-card);
-  padding: 2rem;
-}
-</style>

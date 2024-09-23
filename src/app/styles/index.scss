@@ -5,3 +5,9 @@
 @import 'variables';
 @import 'core';
 @import 'typography';
+
+.card {
+  height: 100%;
+  background: var(--surface-card);
+  padding: 2rem;
+}

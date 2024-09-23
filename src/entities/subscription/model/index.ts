@@ -102,13 +102,8 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
       const response = await deleteSubscription(subscriptionToBeSelectedId.value);
       if (response.data.deletedCount) {
         subscriptionModels.value = [...subscriptionModels.value].filter(item => item.id !== subscriptionToBeSelectedId.value);
-        closeDeleteDialog();
       }
-
-      return null;
     }
-
-    return null;
   }
 
   return {

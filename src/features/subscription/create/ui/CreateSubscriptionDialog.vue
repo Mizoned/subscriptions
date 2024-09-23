@@ -6,8 +6,10 @@ import { helpers, required, numeric } from '@vuelidate/validators';
 import { isDate, VALIDATION_MESSAGES } from '@/shared/validator';
 import { type ServerErrors, useVuelidate } from '@vuelidate/core';
 import { useToast } from 'primevue/usetoast';
+import { useNotificationsStore } from '@/entities/notification';
 
 const subscriptionStore = useSubscriptionStore();
+const notificationStore = useNotificationsStore();
 const toast = useToast();
 
 const validationRules = computed(() => ({
@@ -65,6 +67,10 @@ const saveDialog = async () => {
   await subscriptionStore.createSubscriptionHandler({ ...newSubscription.value })
     .then(() => {
       toast.add({ severity: 'success', summary: 'Успешно', detail: 'Подписка успешно создана', life: 3000 });
+      notificationStore.addNotification({
+        text: `Добавлена новая подписка: ${newSubscription.value.name}`,
+        type: 'info'
+      });
     });
   closeDialog();
 }

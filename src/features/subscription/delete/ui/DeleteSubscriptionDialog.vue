@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import { useSubscriptionStore } from '@/entities/subscription/model';
 import { useToast } from 'primevue/usetoast';
+import { useNotificationsStore } from '@/entities/notification';
 
 const subscriptionStore = useSubscriptionStore();
+const notificationStore = useNotificationsStore();
 const toast = useToast();
 
 const submitHandler = async () => {
+  const { name: subscriptionName } = Object.assign({}, subscriptionStore.subscriptionToBeSelected);
+
   await subscriptionStore.deleteSubscriptionHandler()
     .then(() => {
-        toast.add({ severity: 'success', summary: 'Успешно', detail: 'Подписка успешно удалена', life: 3000 });
+      toast.add({ severity: 'success', summary: 'Успешно', detail: 'Подписка успешно удалена', life: 3000 });
+
+      notificationStore.addNotification({
+        text: `Подписка удалена: ${ subscriptionName }`,
+        type: 'warning'
+      });
+      subscriptionStore.closeDeleteDialog();
     });
 }
 
