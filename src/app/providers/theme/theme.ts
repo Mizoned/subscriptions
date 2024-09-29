@@ -43,7 +43,12 @@ const preset = definePreset(Aura, {
 });
 
 export const options = {
-  theme: { preset },
+  theme: {
+    preset,
+    options: {
+        darkModeSelector: '',
+      }
+    },
   ripple: true,
   inputStyle: 'outlined'
 };
