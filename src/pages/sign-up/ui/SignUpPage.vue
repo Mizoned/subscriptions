@@ -130,10 +130,14 @@ const resetExternalResultProperty = (value: string | undefined, propertyName: ke
             <Button
               @click="submitHandler"
               label="Войти"
-              class="w-full p-3 text-lg"
+              class="w-full p-3 text-lg mb-3"
               :loading="authStore.isLoading"
               :disabled="($v.email.$invalid && $v.email.$error) || ($v.password.$invalid && $v.password.$error)"
             />
+            <div class="flex flex-column align-items-center justify-content-center">
+              <span class="text-800 font-medium mb-2">Уже зарегистрированы?</span>
+              <RouterLink to="sign-in" class="text-blue-500">Войти в аккаунт</RouterLink>
+            </div>
           </div>
         </div>
       </div>
