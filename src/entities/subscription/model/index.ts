@@ -36,9 +36,13 @@ export const useSubscriptionStore = defineStore('subscriptionStore', () => {
   }
 
   const getAllSubscriptionHandler = async () => {
-    const response = getAllSubscriptions();
-    const data = (await response).data;
-    subscriptionModels.value = data;
+    try {
+      const response = await getAllSubscriptions();
+      subscriptionModels.value = response.data;
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 
   const editSubscriptionHandler = async (subscription: ICreateSubscription) => {

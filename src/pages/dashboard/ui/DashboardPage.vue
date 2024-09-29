@@ -7,8 +7,10 @@ import { ViewSubscriptionButton, ViewSubscriptionDialog } from '@/features/subsc
 import { EditSubscriptionButton, EditSubscriptionDialog } from '@/features/subscription/edit';
 import { computed, onMounted } from 'vue';
 import type { ISubscription } from '@/entities/subscription';
+import { useToast } from 'primevue/usetoast';
 
 const subscriptionStore = useSubscriptionStore();
+const toast = useToast();
 
 const subscriptionCostPerMonth = computed<number | null>(() => {
   return subscriptionStore.activeSubscriptions?.reduce((acc, subscription) => acc + subscription.price, 0) / 12 ?? null;
@@ -27,7 +29,10 @@ const nextWriteOffSubscription = computed<ISubscription | null>(() => {
 });
 
 onMounted(() => {
-  subscriptionStore.getAllSubscriptionHandler();
+  subscriptionStore.getAllSubscriptionHandler()
+    .catch(() => {
+      toast.add({ severity: 'error', summary: 'Произошла ошибка', detail: 'Не удалось получить список ваших подписок', life: 3000 });
+    });
 });
 </script>
 

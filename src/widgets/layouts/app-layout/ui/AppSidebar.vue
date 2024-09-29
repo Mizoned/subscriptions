@@ -10,7 +10,10 @@ const sidebarItems = ref<ISidebarItem[]>([
   },
   {
     label: 'Профиль',
-    items: [{ label: 'Настройки', icon: 'pi pi-cog', to: '/settings' }]
+    items: [
+      { label: 'Сервисы', icon: 'pi pi-wrench', to: '/services' },
+      { label: 'Настройки', icon: 'pi pi-cog', to: '/settings' }
+    ]
   }
 ]);
 </script>

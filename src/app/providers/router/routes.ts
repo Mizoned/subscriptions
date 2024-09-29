@@ -23,6 +23,12 @@ export const routes: RouteRecordRaw[] = [
         name: 'notifications',
         component: () => import('@/pages/notifications'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: '/services',
+        name: 'services',
+        component: () => import('@/pages/services'),
+        meta: { requiresAuth: true }
       }
     ]
   },
